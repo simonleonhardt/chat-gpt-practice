@@ -19,7 +19,7 @@ export default async function (req, res) {
   if (input.trim().length === 0) {
     res.status(400).json({
       error: {
-        message: "Please enter a valid animal",
+        message: "Please enter a valid prompt",
       }
     });
     return;
@@ -30,6 +30,7 @@ export default async function (req, res) {
       model: "text-davinci-003",
       prompt: generatePrompt(input),
       temperature: 0.8,
+      max_tokens: 200,
     });
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch(error) {
@@ -48,8 +49,15 @@ export default async function (req, res) {
   }
 }
 
+
+//TODO: make text refer to older prompts
 function generatePrompt(input) {
   const capitalizedInput =
   input[0].toUpperCase() + input.slice(1).toLowerCase();
-  return capitalizedInput;
+
+  return `The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.
+
+  Human: Hello, who are you?
+  AI: I am an AI created by OpenAI. How can I help you today?
+  Human: ${capitalizedInput}`
 }
